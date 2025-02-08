@@ -1,0 +1,32 @@
+# Use the official Node.js 18 Alpine image as the base image
+FROM node:20-alpine
+
+# Set the working directory inside the container
+WORKDIR /app
+
+# Install system dependencies required by Laravel
+RUN apk add --no-cache \
+    build-base \
+    gcc \
+    git \
+    g++ \
+    make \
+    libpng-dev \
+    autoconf \
+    automake \
+    libtool \
+    python3 py3-pip \
+    nasm
+
+RUN yarn init -2
+RUN yarn set version 4.1.1
+# Install Laravel Mix globally
+RUN npm install -g laravel-mix webpack laravel-vite-plugin vite
+RUN npm install -D webpack-cli
+RUN yarn
+
+
+EXPOSE 9009
+EXPOSE 6006
+# Set the entrypoint command to run 'yarn watch' when the container starts
+# CMD ["yarn","storybook"]

@@ -1,0 +1,6 @@
+[
+  {
+    "type": "sqlite",
+    "path": "/home/ahmad/cloud/.data/identity/laravel.db"
+  }
+]
