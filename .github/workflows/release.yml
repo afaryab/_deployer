@@ -1,0 +1,43 @@
+name: Auto Release on Main Commit
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Get latest tag
+        id: get_version
+        run: |
+          VERSION=$(git tag --sort=-v:refname | head -n 1)
+          if [[ -z "$VERSION" ]]; then
+            VERSION="v1.0.0"
+          else
+            IFS='.' read -r -a parts <<< "${VERSION//v/}"
+            PATCH=$((parts[2] + 1))
+            VERSION="v${parts[0]}.${parts[1]}.$PATCH"
+          fi
+          echo "New version: $VERSION"
+          echo "version=$VERSION" >> $GITHUB_ENV
+
+      - name: Create versioned release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ env.version }}
+          name: Release ${{ env.version }}
+          body: |
+            Auto-generated release for ${{ github.sha }}
+          draft: false
+          prerelease: false
+
+      - name: Update latest release
+        run: |
+          git tag -f latest
+          git push origin --tags --force
