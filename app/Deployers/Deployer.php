@@ -37,50 +37,12 @@ class Deployer
         }
     }
 
-    public function parkDomain($domain,$port, $downloadPath = '', $folderPath = '/var/www/_deployer', $publicPath = 'public')
+    public function parkDomain($domain, $folderPath = '/var/www/_deployer', $publicPath = 'public')
     {
 
         $output = [];
         // Define Nginx configuration
         $nginxConfig = <<<EOL
-            server {
-
-                listen $port default_server;
-                listen [::]:$port default_server;
-
-                root $folderPath/$publicPath;
-
-                index index.php index.html index.htm;
-
-                server_name _;
-
-                error_log  /var/log/nginx/$domain/error.log;
-                access_log /var/log/nginx/$domain/access.log;
-
-
-                add_header Content-Security-Policy "frame-ancestors 'self' *.docker.processton.com";
-                add_header X-Content-Type-Options "nosniff";
-                add_header X-Accel-Buffering no;
-                add_header Connection keep-alive;
-
-                location ~ \.php$ {
-
-                    fastcgi_pass unix:/run/php/php8.3-fpm.sock;
-                    fastcgi_index index.php;
-                    include fastcgi_params;
-                    fastcgi_param SCRIPT_FILENAME \$document_root\$fastcgi_script_name;
-                    fastcgi_param PATH_INFO \$fastcgi_path_info;
-                    proxy_read_timeout 1500;
-                    fastcgi_read_timeout 1500;
-
-                }
-                location / {
-
-                    try_files \$uri /index.php?\$query_string;
-                    gzip_static on;
-
-                }
-            }
             server {
                 listen 80;
                 server_name $domain;
@@ -89,8 +51,8 @@ class Deployer
 
                 index index.php index.html index.htm;
 
-                error_log  /var/log/nginx/$domain/error.log;
-                access_log /var/log/nginx/$domain/access.log;
+                error_log  /var/log/nginx/$domain-error.log;
+                access_log /var/log/nginx/$domain-access.log;
 
 
                 add_header Content-Security-Policy "frame-ancestors 'self' *.docker.processton.com";
@@ -239,8 +201,8 @@ class Deployer
 
                 index index.php index.html index.htm;
 
-                error_log  /var/log/nginx/$domain/error.log;
-                access_log /var/log/nginx/$domain/access.log;
+                error_log  /var/log/nginx/$tenantFolder/$domain-error.log;
+                access_log /var/log/nginx/$tenantFolder/$domain-access.log;
 
 
                 add_header Content-Security-Policy "frame-ancestors 'self' *.docker.processton.com";
@@ -386,6 +348,78 @@ class Deployer
         }
 
     }
+
+    function makeSafeTableName(string $name): string
+    {
+        // MySQL Reserved Keywords (Add more if needed)
+        $reservedWords = [
+            'SELECT',
+            'INSERT',
+            'UPDATE',
+            'DELETE',
+            'TABLE',
+            'FROM',
+            'WHERE',
+            'ORDER',
+            'JOIN',
+            'GROUP',
+            'USER',
+            'DATABASE',
+            'INDEX',
+            'VIEW',
+            'TRIGGER',
+            'LIMIT',
+            'HAVING',
+            'PRIMARY',
+            'KEY',
+            'FOREIGN',
+            'CONSTRAINT',
+            'CREATE',
+            'DROP',
+            'ALTER',
+            'DEFAULT',
+            'IF',
+            'ELSE',
+            'NULL',
+            'NOT',
+            'AND',
+            'OR',
+            'LIKE',
+            'IN',
+            'EXISTS',
+            'SET',
+            'VALUES',
+            'TEXT',
+            'DATE'
+        ];
+
+        // Convert to lowercase
+        $name = strtolower($name);
+
+        // Replace spaces, special characters, and multiple underscores with a single underscore
+        $name = preg_replace('/[^a-z0-9_]+/', '_', $name);
+        $name = preg_replace('/_+/', '_', $name);
+
+        // Remove underscores from start & end
+        $name = trim($name, '_');
+
+        // Check if the name is a reserved word and add a suffix if needed
+        if (in_array(strtoupper($name), $reservedWords)) {
+            $name .= '_tbl';
+        }
+
+        // Ensure max length does not exceed 64 characters
+        if (strlen($name) > 64) {
+            // Generate a 3-4 digit random number
+            $randomNumber = rand(100, 9999);
+
+            // Trim the string and append the random number
+            $name = substr($name, 0, 60) . '_' . $randomNumber;
+        }
+
+        return $name;
+    }
+
 
 
 }

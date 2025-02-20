@@ -14,7 +14,9 @@ class Tenant extends Model
         'slug',
         'logo',
         'admin_email',
-        'admin_name'
+        'admin_name',
+        'country_id',
+        'currency_id'
 
     ];
 
@@ -28,4 +30,13 @@ class Tenant extends Model
         return $this->hasMany(Domain::class);
     }
 
+    public function country()
+    {
+        return $this->belongsTo(Country::class);
+    }
+
+    public function currency()
+    {
+        return $this->belongsTo(Currency::class);
+    }
 }

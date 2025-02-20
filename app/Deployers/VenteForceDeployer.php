@@ -5,6 +5,8 @@ namespace App\Deployers;
 use App\Deployers\Deployer;
 use App\Deployers\DeployerInterface;
 use Illuminate\Support\Facades\Http;
+use Symfony\Component\Process\Process;
+use Symfony\Component\Process\Exception\ProcessFailedException;
 
 class VenteForceDeployer extends Deployer implements DeployerInterface
 {
@@ -18,28 +20,44 @@ class VenteForceDeployer extends Deployer implements DeployerInterface
 
         $payload = [
             'name' => $this->deploymentAction->tenant_app->name,
-            'slug' => $this->deploymentAction->tenant_app->slug,
-            'domains' => $this->deploymentAction->tenant_app->domains->pluck('domain'),
+            'id' => $this->makeSafeTableName($this->deploymentAction->tenant_app->slug),
+            'domain' => $this->deploymentAction->tenant_app->domains->pluck('domain')->first(),
+            'domains' => $this->deploymentAction->tenant_app->domains->pluck('domain')->toArray(),
             'admin_email' => $this->deploymentAction->tenant->admin_email,
             'admin_name' => $this->deploymentAction->tenant->admin_name,
-            'identity_force_app_key' => $this->deploymentAction->tenant_app->identity_force_app_key,
-            'identity_force_app_secret' => $this->deploymentAction->tenant_app->identity_force_app_secret,
-            'identity_force_app_url' => $this->deploymentAction->tenant_app->identity_force_app_url
+            'tenancy_db_name' => $this->makeSafeTableName($this->deploymentAction->tenant_app->slug),
+            'tenancy_db_username' => $this->makeSafeTableName($this->deploymentAction->tenant_app->slug),
+            'tenancy_db_password' => $this->makeSafeTableName($this->deploymentAction->tenant_app->slug),
+            'currency' => $this->deploymentAction->tenant->currency->code,
+            'country' => $this->deploymentAction->tenant->country->code,
+            ...$this->deploymentAction->tenant_app->meta
         ];
 
-        $url = 'http://localhost:' . $this->deploymentAction->application->port . '/register-tenant';
+        $url = 'http://localhost:' . $this->deploymentAction->application->port . '/tenant/register';
 
         $response = Http::withHeaders([
                 'Accept' => 'application/json',
                 'Content-Type' => 'application/json',
-                'integration-key' => env('PROCESSTON_INTEGRATION_KEY')
+                'Integration-Key' => env('PROCESSTON_INTEGRATION_KEY')
             ])
             ->timeout(0)
             ->post($url, $payload);
 
-
         if($response->created()){
 
+            $responseJson = $response->json();
+
+            $process = new Process(['php', 'artisan', "tenants:migrate", "--tenants=".$responseJson['id']], $this->deploymentAction->application->folder_path);
+            $process->setTimeout(600);
+            $process->run();
+
+            $process = new Process(['php', 'artisan', "tenants:seed", "--tenants=".$responseJson['id']], $this->deploymentAction->application->folder_path);
+            $process->setTimeout(600);
+            $process->run();
+
+            if (!$process->isSuccessful()) {
+                throw new ProcessFailedException($process);
+            }
 
             $this->deploymentAction->update([
                 'status' => 'completed',
@@ -80,10 +98,70 @@ class VenteForceDeployer extends Deployer implements DeployerInterface
     {
         return [
             [
+                'name' => 'dashboard',
+                'path' => 'admin/dashboard',
+                'slug' => 'dashboard',
+                'icon' => 'dashboard',
+            ],
+            [
                 'name' => 'customers',
-                'icon' => '',
+                'path' => 'admin/customers',
                 'slug' => 'customers',
-                'path' => 'customers/list'
+                'icon' => 'face',
+            ],
+            [
+                'name' => 'items',
+                'path' => 'admin/items',
+                'slug' => 'items',
+                'icon' => 'shelves',
+            ],
+            [
+                'name' => 'estimates',
+                'path' => 'admin/estimates',
+                'slug' => 'estimates',
+                'icon' => 'request_quote',
+            ],
+            [
+                'name' => 'invoices',
+                'path' => 'admin/invoices',
+                'slug' => 'invoices',
+                'icon' => 'receipt_long',
+            ],
+            [
+                'name' => 'recurring-invoices',
+                'path' => 'admin/recurring-invoices',
+                'slug' => 'admin-invoices',
+                'icon' => 'cycle',
+            ],
+            [
+                'name' => 'payments',
+                'path' => 'admin/payments',
+                'slug' => 'payments',
+                'icon' => 'payments',
+            ],
+            [
+                'name' => 'expenses',
+                'path' => 'admin/expenses',
+                'slug' => 'expenses',
+                'icon' => 'attach_money',
+            ],
+            [
+                'name' => 'users',
+                'path' => 'admin/users',
+                'slug' => 'users',
+                'icon' => 'group',
+            ],
+            [
+                'name' => 'reports',
+                'path' => 'admin/reports',
+                'slug' => 'reports',
+                'icon' => 'lab_profile',
+            ],
+            [
+                'name' => 'settings',
+                'path' => 'admin/settings',
+                'slug' => 'settings',
+                'icon' => 'settings',
             ]
         ];
     }

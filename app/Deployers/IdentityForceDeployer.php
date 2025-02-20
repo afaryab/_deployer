@@ -18,19 +18,25 @@ class IdentityForceDeployer extends Deployer implements DeployerInterface
 
         $payload = [
             'name' => $this->deploymentAction->tenant_app->name,
-            'slug' => $this->deploymentAction->tenant_app->slug,
+            'id' => $this->makeSafeTableName($this->deploymentAction->tenant_app->slug),
+            'domain' => $this->deploymentAction->tenant_app->domains->pluck('domain')->first(),
             'domains' => $this->deploymentAction->tenant_app->domains->pluck('domain')->toArray(),
             'admin_email' => $this->deploymentAction->tenant->admin_email,
             'admin_name' => $this->deploymentAction->tenant->admin_name,
+            'tenancy_db_name' => $this->makeSafeTableName($this->deploymentAction->tenant_app->slug),
+            'tenancy_db_username' => $this->makeSafeTableName($this->deploymentAction->tenant_app->slug),
+            'tenancy_db_password' => $this->makeSafeTableName($this->deploymentAction->tenant_app->slug),
+            ... $this->deploymentAction->tenant_app->meta
         ];
 
-        $url = 'http://localhost:'.$this->deploymentAction->application->port. '/register-tenant';
+
+        $url = 'http://localhost:'.$this->deploymentAction->application->port. '/tenant/register';
 
 
         $response = Http::withHeaders([
                 'Accept' => 'application/json',
                 'Content-Type' => 'application/json',
-                'integration-key' => env('PROCESSTON_INTEGRATION_KEY')
+                'Integration-Key' => env('PROCESSTON_INTEGRATION_KEY')
             ])
             ->post($url, $payload);
 

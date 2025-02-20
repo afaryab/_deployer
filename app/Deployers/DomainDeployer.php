@@ -20,8 +20,6 @@ class DomainDeployer extends Deployer implements DeployerInterface
 
         $output = $this->parkDomain(
             $application->domain,
-            $application->port,
-            $application->download_path,
             $application->folder_path,
             $application->public_path
 

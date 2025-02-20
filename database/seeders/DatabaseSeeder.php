@@ -30,6 +30,8 @@ class DatabaseSeeder extends Seeder
         $user->__set('type', 1);
         $user->save();
 
+        $this->call(CountriesTableSeeder::class);
+        $this->call(CurrenciesTableSeeder::class);
         $this->call(DeployerSeeder::class);
         $this->call(IdentitySeeder::class);
         $this->call(VentiForceSeeder::class);

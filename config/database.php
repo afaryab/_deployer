@@ -16,7 +16,7 @@ return [
     |
     */
 
-    'default' => env('DB_CONNECTION', 'sqlite'),
+    'default' => env('DEPLOYER_DB_CONNECTION', 'mysql'),
 
     /*
     |--------------------------------------------------------------------------
@@ -44,15 +44,15 @@ return [
 
         'mysql' => [
             'driver' => 'mysql',
-            'url' => env('DEPLOYER_URL'),
-            'host' => env('DEPLOYER_HOST', '127.0.0.1'),
-            'port' => env('DEPLOYER_PORT', '3306'),
-            'database' => env('DEPLOYER_DATABASE', 'laravel'),
-            'username' => env('DEPLOYER_USERNAME', 'root'),
-            'password' => env('DEPLOYER_PASSWORD', ''),
-            'unix_socket' => env('DB_SOCKET', ''),
-            'charset' => env('DB_CHARSET', 'utf8mb4'),
-            'collation' => env('DB_COLLATION', 'utf8mb4_unicode_ci'),
+            'url' => env('DEPLOYER_DB_URL'),
+            'host' => env('DEPLOYER_DB_HOST', '127.0.0.1'),
+            'port' => env('DEPLOYER_DB_PORT', '3306'),
+            'database' => env('DEPLOYER_DB_DATABASE', 'laravel'),
+            'username' => env('DEPLOYER_DB_USERNAME', 'root'),
+            'password' => env('DEPLOYER_DB_PASSWORD', ''),
+            'unix_socket' => env('DEPLOYER_DB_SOCKET', ''),
+            'charset' => env('DEPLOYER_DB_CHARSET', 'utf8mb4'),
+            'collation' => env('DEPLOYER_DB_COLLATION', 'utf8mb4_unicode_ci'),
             'prefix' => '',
             'prefix_indexes' => true,
             'strict' => true,

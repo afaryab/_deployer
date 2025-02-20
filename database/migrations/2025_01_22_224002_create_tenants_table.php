@@ -21,6 +21,8 @@ return new class extends Migration
             $table->string('admin_name');
             $table->string('identity_force_team_id')->nullable();
             $table->string('identity_force_app_id')->nullable();
+            $table->foreignId('currency_id')->constrained();
+            $table->foreignId('country_id')->constrained();
             $table->timestamps();
         });
     }

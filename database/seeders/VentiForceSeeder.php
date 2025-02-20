@@ -22,7 +22,7 @@ class VentiForceSeeder extends Seeder
             'port' => 82,
             'domain' => 'venti-force.docker.processton.com',
             'download_path' => '',
-            'folder_path' => '/var/www/vente_force',
+            'folder_path' => '/var/www/vente',
             'public_path' => 'public',
             'description' => 'A centeralised CRM system',
             'icon' => 'fingerprint',

@@ -8,6 +8,8 @@ use App\Deployers\IdentityForceDeployer;
 use App\Deployers\ProxyDomainDeployer;
 use App\Deployers\VenteForceDeployer;
 use App\Models\Application;
+use App\Models\Country;
+use App\Models\Currency;
 use App\Models\DeploymentActivity;
 use App\Models\Domain;
 use App\Models\Tenant;
@@ -21,6 +23,10 @@ class TenantSeeder extends Seeder
      */
     public function run(): void
     {
+
+        $currency = Currency::where('code', 'PKR')->first();
+        $country = Country::where('code', 'PK')->first();
+
         $tenant = Tenant::createQuietly([
             'name' => 'Processton',
             'slug' => 'processton',
@@ -28,7 +34,9 @@ class TenantSeeder extends Seeder
             'admin_email' => 'ahmadkokab@processton.com',
             'admin_name' => 'Ahmad Faryab Kokab',
             'identity_force_team_id' => 1,
-            'identity_force_app_id' => 1
+            'identity_force_app_id' => 1,
+            'currency_id' => $currency->id,
+            'country_id' => $country->id
         ]);
 
         $tenantApps = Application::whereIn('provider',[
