@@ -20,6 +20,7 @@ class GatsByCollection extends ResourceCollection
         return [
             'title' => 'Laravel',
             'version' => app()->version(),
+            'count' => $tenants->count(),
             'tenants' => new TenantCollection($tenants),
         ];
     }
