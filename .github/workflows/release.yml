@@ -22,10 +22,10 @@ jobs:
         id: get_version
         run: |
           git fetch --tags  # Ensure all remote tags are available
-          
+
           # Find the latest version tag
           LATEST_TAG=$(git tag --sort=-v:refname | grep -E '^v[0-9]+\.[0-9]+\.[0-9]+$' | head -n 1)
-          
+
           # Default first version
           if [[ -z "$LATEST_TAG" ]]; then
             VERSION="v0.0.1"
@@ -47,7 +47,7 @@ jobs:
             # Build new version
             VERSION="v${MAJOR}.${MINOR}.${PATCH}"
           fi
-          
+
           echo "New version: $VERSION"
           echo "version=$VERSION" >> $GITHUB_ENV
 
@@ -55,7 +55,7 @@ jobs:
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          
+
           # Check if tag exists before pushing
           if git rev-parse ${{ env.version }} >/dev/null 2>&1; then
             echo "Tag ${{ env.version }} already exists, skipping."
@@ -79,3 +79,23 @@ jobs:
         run: |
           git tag -fa latest -m "Latest release"
           git push origin latest --force
+
+      - name: Checkout main repo
+        uses: actions/checkout@v4
+
+      - name: Setup Git
+        run: |
+          git config --global user.name "afaryab"
+          git config --global user.email "ahmadkokab@gmail.com"
+
+      - name: Clone the target repository
+        run: |
+          git clone https://x-access-token:${{ secrets.CLOUD_REPO_TOKEN }}@github.com/processton/cloud.git
+          cd cloud
+          git checkout prod
+
+      - name: Make an empty commit
+        run: |
+          cd cloud
+          git commit --allow-empty -m "Automated empty commit from venteforce on latest release $(date)"
+          git push https://x-access-token:${{ secrets.CLOUD_REPO_TOKEN }}@github.com/processton/cloud.git prod
