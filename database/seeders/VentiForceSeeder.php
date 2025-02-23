@@ -20,7 +20,7 @@ class VentiForceSeeder extends Seeder
             'name' => 'Venti Force',
             'slug' => 'venti_force',
             'port' => 82,
-            'domain' => 'venti-force.docker.processton.com',
+            'domain' => 'venti-force.' . env('PRIMARY_DOMAIN'),
             'download_path' => '',
             'folder_path' => '/var/www/vente',
             'public_path' => 'public',

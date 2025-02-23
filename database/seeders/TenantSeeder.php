@@ -91,6 +91,15 @@ class TenantSeeder extends Seeder
         $deploymentAction1->provider::deploy($deploymentAction1);
         $deploymentAction2->provider::deploy($deploymentAction2);
 
+        $response = ProcesstonIdentityConnector::initiateConnection()->addTeam($tenant->name, $tenant->admin_name, $tenant->admin_email);
+
+        if ($response) {
+
+            $tenant->__set('identity_force_team_id', $response['team']['id']);
+            $tenant->__set('identity_force_app_id', $response['app']['id']);
+            $tenant->save();
+        }
+
         $ventiForceApplication = $tenantApps->filter(function ($app) {
             return $app->provider == VenteForceDeployer::class;
         })->first();
@@ -108,14 +117,14 @@ class TenantSeeder extends Seeder
 
 
         $response = ProcesstonIdentityConnector::initiateConnection()->addClient(
-            $tenantApp->slug . '.' . env('PRIMARY_DOMAIN') . '/callback/identity-force',
+            'processton-ventiforce.' . env('PRIMARY_DOMAIN') . '/oauth/callback',
             $tenantApp->tenant->identity_force_app_id
         );
 
         if ($response) {
-            $tenantApp->__set('identity_force_app_secret', $response['data']['client_secret']);
-            $tenantApp->__set('identity_force_app_key', $response['data']['client_id']);
-            $tenantApp->__set('identity_force_app_url', $response['data']['client_url']);
+            $tenantApp->__set('identity_force_app_secret', $response['client_secret']);
+            $tenantApp->__set('identity_force_app_key', $response['client_id']);
+            $tenantApp->__set('identity_force_app_url', $response['client_url']);
             $tenantApp->save();
         }
 

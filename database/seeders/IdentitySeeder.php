@@ -17,11 +17,11 @@ class IdentitySeeder extends Seeder
     public function run(): void
     {
         $application = Application::createQuietly([
-            'name' => 'IdentityForce',
+            'name' => 'Identity Force',
             'slug' => 'identity-force',
             'description' => 'This is authentication provider available for tenants',
             'port' => 81,
-            'domain' => 'identity-force.docker.processton.com',
+            'domain' => 'identity-force.' . env('PRIMARY_DOMAIN'),
             'download_path' => '',
             'folder_path' => '/var/www/identity',
             'public_path' => 'public',
@@ -31,7 +31,7 @@ class IdentitySeeder extends Seeder
             'meta' => [
                 "MAX_USERS" => 99,
                 "MAX_TEAMS" => 33,
-                "ADMIN_TEAM_NAME" => 'Administrators',
+                "ADMIN_TEAM_NAME" => 'Processton',
                 "ADMIN_IDENTIFIED_BY" => 'Team'
             ]
         ]);

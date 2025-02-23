@@ -22,9 +22,9 @@ class DatabaseSeeder extends Seeder
         $getUserModel = $reflector->getMethod('getUserModel');
         $getUserModel->setAccessible(true);
         $user = $getUserModel->invoke($filamentMakeUserCommand)::create([
-            'name' => 'Ahmad Faryab Kokab',
-            'email' => 'ahmadkokab@gmail.com',
-            'password' => Hash::make('Kokab!23'),
+            'name' => 'Administrator',
+            'email' => 'admin@example.com',
+            'password' => Hash::make('password'),
         ]);
 
         $user->__set('type', 1);

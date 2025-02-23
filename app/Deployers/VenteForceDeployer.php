@@ -30,7 +30,11 @@ class VenteForceDeployer extends Deployer implements DeployerInterface
             'tenancy_db_password' => $this->makeSafeTableName($this->deploymentAction->tenant_app->slug),
             'currency' => $this->deploymentAction->tenant->currency->code,
             'country' => $this->deploymentAction->tenant->country->code,
-            ...$this->deploymentAction->tenant_app->meta
+            ...$this->deploymentAction->tenant_app->meta,
+            'identity_force_app_secret' => $this->deploymentAction->tenant_app->identity_force_app_secret,
+            'identity_force_app_key' => $this->deploymentAction->tenant_app->identity_force_app_key,
+            'identity_force_app_url' => $this->deploymentAction->tenant_app->identity_force_app_url,
+
         ];
 
         $url = 'http://localhost:' . $this->deploymentAction->application->port . '/tenant/register';

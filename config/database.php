@@ -16,7 +16,7 @@ return [
     |
     */
 
-    'default' => env('DEPLOYER_DB_CONNECTION', 'mysql'),
+    'default' => env('DB_CONNECTION', 'mysql'),
 
     /*
     |--------------------------------------------------------------------------
@@ -33,8 +33,8 @@ return [
 
         'sqlite' => [
             'driver' => 'sqlite',
-            'url' => env('DEPLOYER_DB_URL'),
-            'database' => env('DEPLOYER_DB_DATABASE', database_path('laravel.db')),
+            'url' => env('DB_URL'),
+            'database' => env('DB_DATABASE', database_path('laravel.db')),
             'prefix' => '',
             'foreign_key_constraints' => env('DB_FOREIGN_KEYS', true),
             'busy_timeout' => null,
@@ -44,15 +44,15 @@ return [
 
         'mysql' => [
             'driver' => 'mysql',
-            'url' => env('DEPLOYER_DB_URL'),
-            'host' => env('DEPLOYER_DB_HOST', '127.0.0.1'),
-            'port' => env('DEPLOYER_DB_PORT', '3306'),
-            'database' => env('DEPLOYER_DB_DATABASE', 'laravel'),
-            'username' => env('DEPLOYER_DB_USERNAME', 'root'),
-            'password' => env('DEPLOYER_DB_PASSWORD', ''),
-            'unix_socket' => env('DEPLOYER_DB_SOCKET', ''),
-            'charset' => env('DEPLOYER_DB_CHARSET', 'utf8mb4'),
-            'collation' => env('DEPLOYER_DB_COLLATION', 'utf8mb4_unicode_ci'),
+            'url' => env('DB_URL'),
+            'host' => env('DB_HOST', '127.0.0.1'),
+            'port' => env('DB_PORT', '3306'),
+            'database' => env('DB_DATABASE', 'laravel'),
+            'username' => env('DB_USERNAME', 'root'),
+            'password' => env('DB_PASSWORD', ''),
+            'unix_socket' => env('DB_SOCKET', ''),
+            'charset' => env('DB_CHARSET', 'utf8mb4'),
+            'collation' => env('DB_COLLATION', 'utf8mb4_unicode_ci'),
             'prefix' => '',
             'prefix_indexes' => true,
             'strict' => true,
@@ -64,15 +64,15 @@ return [
 
         'mariadb' => [
             'driver' => 'mariadb',
-            'url' => env('DEPLOYER_DB_URL'),
-            'host' => env('DEPLOYER_DB_HOST', '127.0.0.1'),
-            'port' => env('DEPLOYER_DB_PORT', '3306'),
-            'database' => env('DEPLOYER_DB_DATABASE', 'laravel'),
-            'username' => env('DEPLOYER_DB_USERNAME', 'root'),
-            'password' => env('DEPLOYER_DB_PASSWORD', ''),
-            'unix_socket' => env('DEPLOYER_DB_SOCKET', ''),
-            'charset' => env('DEPLOYER_DB_CHARSET', 'utf8mb4'),
-            'collation' => env('DEPLOYER_DB_COLLATION', 'utf8mb4_unicode_ci'),
+            'url' => env('DB_URL'),
+            'host' => env('DB_HOST', '127.0.0.1'),
+            'port' => env('DB_PORT', '3306'),
+            'database' => env('DB_DATABASE', 'laravel'),
+            'username' => env('DB_USERNAME', 'root'),
+            'password' => env('DB_PASSWORD', ''),
+            'unix_socket' => env('DB_SOCKET', ''),
+            'charset' => env('DB_CHARSET', 'utf8mb4'),
+            'collation' => env('DB_COLLATION', 'utf8mb4_unicode_ci'),
             'prefix' => '',
             'prefix_indexes' => true,
             'strict' => true,
@@ -84,13 +84,13 @@ return [
 
         'pgsql' => [
             'driver' => 'pgsql',
-            'url' => env('DEPLOYER_DB_URL'),
-            'host' => env('DEPLOYER_DB_HOST', '127.0.0.1'),
-            'port' => env('DEPLOYER_DB_PORT', '5432'),
-            'database' => env('DEPLOYER_DB_DATABASE', 'laravel'),
-            'username' => env('DEPLOYER_DB_USERNAME', 'root'),
-            'password' => env('DEPLOYER_DB_PASSWORD', ''),
-            'charset' => env('DEPLOYER_DB_CHARSET', 'utf8'),
+            'url' => env('DB_URL'),
+            'host' => env('DB_HOST', '127.0.0.1'),
+            'port' => env('DB_PORT', '5432'),
+            'database' => env('DB_DATABASE', 'laravel'),
+            'username' => env('DB_USERNAME', 'root'),
+            'password' => env('DB_PASSWORD', ''),
+            'charset' => env('DB_CHARSET', 'utf8'),
             'prefix' => '',
             'prefix_indexes' => true,
             'search_path' => 'public',
@@ -99,13 +99,13 @@ return [
 
         'sqlsrv' => [
             'driver' => 'sqlsrv',
-            'url' => env('DEPLOYER_DB_URL'),
-            'host' => env('DEPLOYER_DB_HOST', 'localhost'),
-            'port' => env('DEPLOYER_DB_PORT', '1433'),
-            'database' => env('DEPLOYER_DB_DATABASE', 'laravel'),
-            'username' => env('DEPLOYER_DB_USERNAME', 'root'),
-            'password' => env('DEPLOYER_DB_PASSWORD', ''),
-            'charset' => env('DEPLOYER_DB_CHARSET', 'utf8'),
+            'url' => env('DB_URL'),
+            'host' => env('DB_HOST', 'localhost'),
+            'port' => env('DB_PORT', '1433'),
+            'database' => env('DB_DATABASE', 'laravel'),
+            'username' => env('DB_USERNAME', 'root'),
+            'password' => env('DB_PASSWORD', ''),
+            'charset' => env('DB_CHARSET', 'utf8'),
             'prefix' => '',
             'prefix_indexes' => true,
             // 'encrypt' => env('DB_ENCRYPT', 'yes'),

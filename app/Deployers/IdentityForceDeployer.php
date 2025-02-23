@@ -5,6 +5,8 @@ namespace App\Deployers;
 use App\Deployers\Deployer;
 use App\Deployers\DeployerInterface;
 use Illuminate\Support\Facades\Http;
+use Symfony\Component\Process\Process;
+use Symfony\Component\Process\Exception\ProcessFailedException;
 
 class IdentityForceDeployer extends Deployer implements DeployerInterface
 {
@@ -41,6 +43,20 @@ class IdentityForceDeployer extends Deployer implements DeployerInterface
             ->post($url, $payload);
 
         if($response->created()){
+
+            $responseJson = $response->json();
+
+            $process = new Process(['php', 'artisan', "tenants:migrate", "--tenants=" . $responseJson['id']], $this->deploymentAction->application->folder_path);
+            $process->setTimeout(600);
+            $process->run();
+
+            $process = new Process(['php', 'artisan', "tenants:seed", "--tenants=" . $responseJson['id']], $this->deploymentAction->application->folder_path);
+            $process->setTimeout(600);
+            $process->run();
+
+            if (!$process->isSuccessful()) {
+                throw new ProcessFailedException($process);
+            }
 
             $this->deploymentAction->update([
                 'status' => 'completed',

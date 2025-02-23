@@ -9,7 +9,7 @@
         {{ $asset->getHtml() }}
     @endif
 @endforeach
-<script>
+{{-- <script>
     window.PassOn = function (message){
         window.parent.postMessage(message, "*")
     }
@@ -58,19 +58,21 @@
 
     }
 
-</script>
+</script> --}}
 <style>
     :root {
         @foreach ($cssVariables ?? [] as $cssVariableName => $cssVariableValue) --{{ $cssVariableName }}:{{ $cssVariableValue }}; @endforeach
     }
-    .fi-topbar{
+
+
+    .fi-sidebar-header, .fi-topbar{
         display: none;
     }
-    .fi-sidebar{
+    /* .fi-sidebar{
         display: none;
     }
     .fi-main{
         min-height: 100vh;
         min-width: 100%;
-    }
+    } */
 </style>

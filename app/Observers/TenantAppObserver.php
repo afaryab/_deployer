@@ -16,7 +16,7 @@ class TenantAppObserver
      */
     public function created(TenantApp $tenantApp): void
     {
-        $domainName = str_replace("_", "-", $tenantApp->slug) . env('PRIMARY_DOMAIN');
+        $domainName = $tenantApp->domains->pluck('domain')->first();
 
         if($tenantApp->application->provider != IdentityForceDeployer::class){
 

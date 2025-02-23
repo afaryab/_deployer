@@ -41,17 +41,24 @@ class IdentityForceConnector extends HttpConnector
     {
 
         $response = $this->postRequest(
-            $this->endPoint . '/api/integration/client/new',
+            $this->endPoint . '/api/integration/teams/client/new',
             [
-                'call_back' => $call_back,
+                'call_back' => $this->ensureUrlHasScheme($call_back),
                 'connected_app_id' => $connected_app_id
             ]
         );
-
         if ($response->created()) {
             return $response->json();
         } else {
             return false;
         }
+    }
+
+    private function ensureUrlHasScheme($url)
+    {
+        if (!preg_match("~^(?:f|ht)tps?://~i", $url)) {
+            return 'http://' . $url; // Default to HTTP if missing
+        }
+        return $url;
     }
 }
